@@ -1,0 +1,132 @@
+extends base.pug
+
+block content
+
+
+    main#homeMain
+    .container
+        #exampleModalCenter.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true')
+            .modal-dialog.modal-dialog-centered(role='document')
+              .modal-content.bg-dark.text-white.text-center
+                .modal-header
+                  h5#exampleModalLongTitle.modal-title Kullanıcı Detayı
+                  button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span.text-white(aria-hidden='true') x
+                .modal-body
+                .modal-footer
+                  button.btn.btn-secondary(type='button' data-dismiss='modal') Kapat
+        .card.bg-dark.text-white
+            .card-body.d-flex.justify-content-around
+                div.col-6
+                    h5.card-title Hoşgeldin #{userInfo.name} #{userInfo.surname}
+                    ul
+                        li
+                          p Email: #{userInfo.email}
+                        li
+                          p Dil: #{userInfo.language}
+                        li
+                          p Ülke: #{userInfo.country} 
+                        li
+                          p Kayıt Tarih: #{userInfo.registerDate} 
+                    a(href='/logout' style='color: white')
+                        i.fa.fa-sign-out-alt(aria-hidden='true')
+                div.col-6
+                    h5 Aktif Kullanıcı listesi
+                    div#onlineUsers
+
+    script(src="/socket.io/socket.io.js")
+    script(type="text/javascript").
+        $(document).on("click", ".open-user-detail", (e) => {
+            $(".modal-body").empty();
+            e.preventDefault();
+            const userId = e.target.id;
+            $.ajax({
+                url: `user/${userId}`,
+                type: "get",
+                contentType: 'application/json',
+                success: function (result) {
+                    $(".modal-body").append(`<p>Ad: ${result.data.name}</p>`);
+                    $(".modal-body").append(`<p>Soyad: ${result.data.surname}</p>`);
+                    $(".modal-body").append(`<p>Email: ${result.data.email}</p>`);
+                    $(".modal-body").append(`<p>Dil: ${result.data.language}</p>`);
+                    $(".modal-body").append(`<p>Ülke: ${result.data.country}</p>`);
+                    $(".modal-body").append(`<p>Kayıt Tarihi: ${result.data.date}</p>`);
+                },
+                error: function (data) {
+                    $(".alert").remove()
+                    $("body").append("<div class=\"alert alert-error\">\n" +
+                        "    <strong>Hata!</strong> Kullanıcı detayı getirilemedi.\n" +
+                        "  </div>")
+                    $(".alert").fadeOut(4000);
+                }
+            });
+        });
+        let users;
+        const addAlertToastr = (type, message, alertType) => {
+            $(".alert").remove()
+            $("body").append(`<div class=\"alert alert-${alertType}\">\n` +
+                `    <strong>${type}</strong> ${message}\n`+
+                "  </div>")
+            $(".alert").fadeOut(4000);
+        }
+
+        const socket = io();
+        const userInfo = !{JSON.stringify(userInfo)};
+        //- const userInfo = JSON.parse(userInfoSTR);
+        socket.on('welcome', onlineUser =>{
+            console.log('deneme');
+            socket.emit('set username', {id:userInfo.id, name: userInfo.name + ' ' + userInfo.surname});
+        });
+        socket.on('allOnlineUsers', onlineUsersList =>{
+            console.log('deneme2');
+            $("#onlineUsers").empty();
+            users = onlineUsersList;
+            if (onlineUsersList.length) {
+                onlineUsersList.forEach(onlineUser => {
+                    if (onlineUser.id !== userInfo.id) {
+                        $("#onlineUsers").append(`<p><i class="open-user-detail fa fa-info-circle" data-toggle="modal" data-target="#exampleModalCenter" id="${onlineUser.id}"'></i>${onlineUser.name}</p>`);
+                    } else {
+                        if (onlineUsersList.length === 1) {
+                            $("#onlineUsers").append("<p>Aktif kullanıcı yok.</p>");
+                        }
+                    }
+                });
+            } else {
+                $("#onlineUsers").append("<p>Aktif kullanıcı yok.</p>");
+            }
+        });
+
+        socket.on('disconnectedUser', disconnectedUser =>{
+            const user = JSON.parse(disconnectedUser);
+            const index = users.indexOf(user);
+            if (index > -1) {
+                users.splice(index, 1);
+            }
+            addAlertToastr('Çıkış Yaptı', user.name, 'warning');
+            $('p').each(function () {
+                if ($(this)[0].children[0] && $(this)[0].children[0].id == user.id) {
+                    $(this).remove();
+                    if (!$('#onlineUsers')[0].children.length) {
+                        $("#onlineUsers").append("<p>Aktif kullanıcı yok.</p>");
+                    }
+                }
+            });
+        })
+
+        socket.on('onlineUser', onlineUser =>{
+            const user = JSON.parse(onlineUser);
+            if (users && userInfo.id !== user.id) {
+                users.push(user);
+                addAlertToastr('Çevrimiçi Oldu', user.name, 'success');
+                $('p').each(function () {
+                    if ($(this)[0].innerHTML == 'Aktif kullanıcı yok.') {
+                        $(this).remove();
+                    }
+                });
+                $("#onlineUsers").append(`<p><i class="open-user-detail fa fa-info-circle" data-toggle="modal" data-target="#exampleModalCenter" id="${user.id}"'></i>${user.name}</p>`);
+            }
+        })
+
+        socket.on('newRegister', message =>{
+            addAlertToastr('Yeni Kayıt', message, 'success');
+        })

@@ -1,0 +1,70 @@
+extends base.pug
+
+block content
+  
+  main#registerMain.d-flex.flex-row.h-100.align-items-center.justify-content-center
+    .container
+      #registerForm
+        #userCard.card.bg-dark.text-white.text-center.col-12.col-sm-7.col-xl-5.col-lg-6.m-auto
+          .card-header.text-center
+            h4 Hesap Olu&scedil;tur
+          .card-body.col-md-8.col-xs-5.m-auto
+            if alerts
+              each val in alerts
+                div
+                  strong #{val.msg}
+            div
+              form(method="POST" action="register")
+                span#nameError(style={display:'none', color: 'red'})
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-user-circle(aria-hidden='true')
+                  input#inputUserName.form-control.rounded-0(type='text' name='name' aria-describedby='usernameHelp' style='background-clip: border-box' placeholder='İsim')
+                span#surnameError(style={display:'none', color: 'red'})
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-id-badge(aria-hidden='true')
+                  input#inputUserSurname.form-control.rounded-0(type='text' name='surname' aria-describedby='surnameHelp' style='background-clip: border-box' placeholder='Soyisim')
+                span#emailError(style={display:'none', color: 'red'})
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-envelope(aria-hidden='true')
+                  input#inputUserEmail.form-control.rounded-0(type='text' name='email' aria-describedby='emailHelp' style='background-clip: border-box' placeholder='Email Adresi')
+                span#languageError(style={display:'none', color: 'red'})              
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-language(aria-hidden='true')
+                  input#inputUserLanguage.form-control.rounded-0(type='text' name='language' aria-describedby='languageHelp' style='background-clip: border-box' placeholder='Dil')
+                span#countryError(style={display:'none', color: 'red'})              
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-globe-americas(aria-hidden='true')
+                  input#inputUserCountry.form-control.rounded-0(type='text' name='country' aria-describedby='countryHelp' style='background-clip: border-box' placeholder='Ülke')
+                span#passwordError(style={display:'none', color: 'red'})              
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-key(aria-hidden='true')
+                  input#inputUserPassword.form-control.rounded-0(type="password" name='password' aria-describedby='passwordHelp' style='background-clip: border-box' placeholder='Şifre')
+                span#confirmPasswordError(style={display:'none', color: 'red'})              
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-key(aria-hidden='true')
+                  input#inputUserConPass.form-control.rounded-0(type="password" name='confirmPassword' aria-describedby='confirmHelp' style='background-clip: border-box' placeholder='Şifre Tekrarı')
+                button.btn.btn-primary(type='submit') Kaydol
+          #registerLogin.card-footer.bg-dark.m-auto
+            p
+              | Hesab&imath;n m&imath; var? 
+              a(href='/login') &Uuml;ye giri&scedil;i
+    script(type="text/javascript").
+        const errors = !{JSON.stringify(error_msg)};
+        errors.forEach(error =>{
+          $(`#${error.param}Error`).text(error.msg);
+          $(`#${error.param}Error`).css("display", "block");
+        });

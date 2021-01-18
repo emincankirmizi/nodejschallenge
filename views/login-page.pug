@@ -1,0 +1,45 @@
+extends base.pug
+
+block content
+
+  main#loginMain.d-flex.flex-row.h-100.align-items-center.justify-content-center
+    .container
+      #loginForm
+        #userCard.card.bg-dark.text-white.text-center.col-12.col-sm-7.col-xl-5.col-lg-6.m-auto
+          .card-header.text-center
+            h4 &Uuml;ye Giri&scedil;i
+          .card-body.col-md-8.col-xs-5.m-auto
+            div
+              form(method="POST" action="login")
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-envelope(aria-hidden='true')
+                  input#inputEmail.form-control.rounded-0(type='text' name='email' aria-describedby='emailHelp' style='background-clip: border-box' placeholder='Email Adresi')
+                span#emailError(style={display:'none', color: 'red'})  
+                .form-group.d-flex.flex-row
+                  .input-group-append
+                    span.input-group-text.rounded-0
+                      i.fa.fa-key(aria-hidden='true')
+                  input#inputPassword.form-control.rounded-0(type='password' name='password' aria-describedby='passwordHelp' style='background-clip: border-box' placeholder='Şifre')
+                span#passwordError(style={display:'none', color: 'red'})  
+                span#successMsg(style={display:'none', color: 'aqua'})  
+                button.btn.btn-primary(type='submit') Giri&scedil; yap
+            #messages(clas='text-white text-center' style='background: #096bcb; margin-top: 5px;')
+            #registerLogin.mt-1
+              p
+                | Hesab&imath;n yok mu? 
+                a(href='register') Hesap olu&scedil;tur
+  script(type="text/javascript").
+        const errors = !{JSON.stringify(error_msg)};
+        const success= !{JSON.stringify(success_msg)};
+        const loginError = !{JSON.stringify(error)};
+        errors.forEach(error =>{
+          $(`#${error.param}Error`).text(error.msg).css("display", "block");
+        });
+        if (loginError) {
+          $("#passwordError").text(loginError[0]).css("display", "block");
+        }
+        if (success) {
+          $("#successMsg").text(success[0]).css("display", "block");
+        }

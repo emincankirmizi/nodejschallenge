@@ -1,0 +1,77 @@
+/* html, body {
+    height: 100%;
+} */
+
+body {
+    background: #2c2c2f;
+}
+
+#userCard {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 10px 10px;
+}
+
+nav {
+    background: #2c2c2f;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card p {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.issue-card span {
+    margin-right: 0.5rem;
+    margin-left: 0.8rem;
+}
+
+.main-card {
+    padding: 0;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-right: 1rem;
+}
+
+.issue-card {
+    border-style: solid;
+    border-color: black;
+    background: #1e252b;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.modal-body p {
+    display: grid;
+}
+
+.modal {
+    overflow: auto;
+}
+
+.point {
+    height: 1rem;
+    width: 1rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-top: 1px;
+}
+
+#todoList, #progressList, #doneList {
+    padding-inline-start: 0px;
+    min-height: 1rem;
+}
+
+.placeholder {
+    background-color: red;
+}
+
+.alert {
+    position: fixed;
+    top: 4rem;
+    z-index: 9999;
+    right: 0px;
+}
