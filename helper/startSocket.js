@@ -138,16 +138,16 @@ const getAllConnectedUsers = (socket) => {
         if (err) {
             console.log(err)
         } else {
+            const users = [];
             if (rply) {
-                const users = [];
                 const socketUsers = JSON.parse(rply);
                 socketUsers.forEach(user => {
                     users.pushIfNotExist(user, (e) => {
                         return e.id === user.id && e.name === user.name;
                     });
                 })
-                socket.emit('allOnlineUsers', users);
             }
+            socket.emit('allOnlineUsers', users);
         }
     });
 }
